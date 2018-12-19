@@ -1,0 +1,7 @@
+recursive-include marimba/templates *
+recursive-include marimba/static *
+include MANIFEST.in
+exclude .gitignore
+recursive-exclude * *.py[co]
+recursive-exclude * *~ 
+recursive-exclude * *.orig
