@@ -1,11 +1,11 @@
-from flask import request, redirect, url_for, render_template, send_from_directory, send_file
-import convertextract
+from flask import request, redirect, url_for, render_template, send_from_directory, send_file, flash
 import time
 import os
 from werkzeug.utils import secure_filename
 from marimba import app, allowed_file
 import subprocess
 from tempfile import NamedTemporaryFile, TemporaryFile, mkstemp
+from marimba.image_creator import ImageGenerator
 
 @app.route("/")
 def hello():
@@ -40,11 +40,25 @@ def upload_file():
                 fd, tmp_path = mkstemp()
                 upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 f.save(upload_path)
-                subprocess.run(['/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
-                return send_file(tmp_path,
-                                as_attachment=True,
-                                mimetype='application/x-midi',
-                                attachment_filename='output.mid')
+          
+                if request.form["file_type"] == 'image':
+                    ig = ImageGenerator(upload_path, app.config['UPLOAD_FOLDER'])
+                    ig.create_wave()
+                    wav_path = 'waveform.png'
+                    ig.write_plot(wav_path)
+                    ig.create_spectrogram()
+                    spectro_path = 'spectrogram.png'
+                    ig.write_plot(spectro_path)
+                    return render_template('main.html', waveform_path=wav_path, spectrogram_path=spectro_path)
+
+                elif request.form["file_type"] == 'midi':
+                    subprocess.run(['/Users/pinea/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
+                    # subprocess.run(['/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
+                    return send_file(tmp_path,
+                                    as_attachment=True,
+                                    mimetype='application/x-midi',
+                                    attachment_filename='output.mid')
+                
             finally:
                 os.remove(tmp_path)
                 os.remove(upload_path)
@@ -54,3 +68,10 @@ Sorry, your file couldn't be uploaded or converted. Are you sure it was a .wav f
 </p>
     '''
 
+@app.route('/uploads/<filename>')
+def send_img_file(filename):
+    filename = os.path.abspath(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    print(f"sending file {filename}")
+    return send_file(filename,
+                    mimetype='image/png')
+    # return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

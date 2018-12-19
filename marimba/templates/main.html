@@ -15,7 +15,20 @@
     <form class="form" action="/uploader" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" />
         <input type="submit" />
+        <label for="file_type">Pick an output:</label>
+        <select name="file_type">
+            <option value="midi">Notes</option>
+            <option value="image">Images</option>
+        </select>
     </form>
+    <div>
+        {% if waveform_path %}
+        <img src="{{ url_for('send_img_file', filename=waveform_path) }}">
+        {% endif %}
+        {% if spectrogram_path %}
+        <img src="{{ url_for('send_img_file', filename=spectrogram_path) }}">
+        {% endif %}
+    </div>
 </body>
 
 </html>
