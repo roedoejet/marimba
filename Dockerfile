@@ -12,8 +12,10 @@ RUN apt-get install -y libfftw3-dev libsndfile1-dev libao-dev libsamplerate0-dev
 RUN pip3 install -r marimba/requirements.txt
 RUN git clone https://github.com/kichiki/WaoN.git
 
+RUN cd WaoN && make
+
 RUN cd marimba && pip3 install -e .
 
 WORKDIR /
 
-# CMD gunicorn mohawkapi:app --bind 0.0.0.0:$5000
+CMD gunicorn marimba:app --bind 0.0.0.0:$PORT

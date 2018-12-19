@@ -40,7 +40,7 @@ def upload_file():
                 fd, tmp_path = mkstemp()
                 upload_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 f.save(upload_path)
-                subprocess.run(['/Users/pinea/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
+                subprocess.run(['/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
                 return send_file(tmp_path,
                                 as_attachment=True,
                                 mimetype='application/x-midi',
