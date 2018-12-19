@@ -44,10 +44,11 @@ def upload_file():
                 if request.form["file_type"] == 'image':
                     ig = ImageGenerator(upload_path, app.config['UPLOAD_FOLDER'])
                     ig.create_wave()
-                    wav_path = 'waveform.png'
+                    time_stamp = str(int(time.time()))
+                    wav_path = f'waveform{time_stamp}.png'
                     ig.write_plot(wav_path)
                     ig.create_spectrogram()
-                    spectro_path = 'spectrogram.png'
+                    spectro_path = f'spectrogram{time_stamp}.png'
                     ig.write_plot(spectro_path)
                     return render_template('main.html', waveform_path=wav_path, spectrogram_path=spectro_path)
 
