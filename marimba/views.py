@@ -54,7 +54,8 @@ def upload_file():
 
                 elif request.form["file_type"] == 'midi':
                     upload_path = os.path.abspath(upload_path)
-                    commands = ['/Users/pinea/WaoN/waon', '-c', '-4.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"]
+                    # commands = ['/Users/pinea/WaoN/waon', '-c', '-4.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"]
+                    commands = ['/WaoN/waon', '-c', '-4.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"]
                     subprocess.call(commands)
                     return send_file(tmp_path,
                                     as_attachment=True,
