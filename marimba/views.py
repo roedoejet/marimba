@@ -53,8 +53,9 @@ def upload_file():
                     return render_template('main.html', waveform_path=wav_path, spectrogram_path=spectro_path)
 
                 elif request.form["file_type"] == 'midi':
-                    # subprocess.run(['/Users/pinea/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
-                    subprocess.run(['/WaoN/waon', '--cutoff', '-6.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"])
+                    upload_path = os.path.abspath(upload_path)
+                    commands = ['/Users/pinea/WaoN/waon', '-c', '-4.0', '-i', f'{upload_path}', '-o', f"{tmp_path}"]
+                    subprocess.call(commands)
                     return send_file(tmp_path,
                                     as_attachment=True,
                                     mimetype='application/x-midi',
